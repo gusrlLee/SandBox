@@ -136,6 +136,76 @@ struct Triangle
     }
 };
 
+struct AABB
+{
+    float3 min, max;
+
+    __host__ __device__ AABB()
+    {
+        min = make_float3(FLT_MAX, FLT_MAX, FLT_MAX);
+        max = make_float3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+    }
+
+    __host__ __device__ AABB(float3 a, float3 b) : min(a), max(b) {}
+
+    __host__ __device__ void grow(const AABB &other)
+    {
+        min.x = fminf(min.x, other.min.x);
+        min.y = fminf(min.y, other.min.y);
+        min.z = fminf(min.z, other.min.z);
+        max.x = fmaxf(max.x, other.max.x);
+        max.y = fmaxf(max.y, other.max.y);
+        max.z = fmaxf(max.z, other.max.z);
+    }
+
+    __host__ __device__ void grow(float3 p) 
+    {
+        min.x = fminf(min.x, p.x);
+        min.y = fminf(min.y, p.y);
+        min.z = fminf(min.z, p.z);
+        max.x = fmaxf(max.x, p.x);
+        max.y = fmaxf(max.y, p.y);
+        max.z = fmaxf(max.z, p.z);
+    }
+
+    __host__ __device__ float area()
+    {
+		float3 e = max - min; // box extent
+		return e.x * e.y + e.y * e.z + e.z * e.x;
+	}
+};
+
+struct BVHNode {
+    AABB aabb;
+    int leftChild;
+    int firstPrimIdx;
+    int primCount; // primitive count 
+
+    __host__ __device__ bool isLeaf() const { return primCount > 0; }
+};
+
+struct BVH 
+{
+    BVHNode* nodes;
+    uint32_t* triIndices;
+    uint32_t nodeUsed = 0;
+
+    void allocate(int numTriangles) 
+    {
+        nodes = new BVHNode[numTriangles * 2];
+        triIndices = new uint32_t[numTriangles];
+        nodeUsed = 0;
+    }
+
+    void free() 
+    {
+        if (nodes) delete[] nodes;
+        if (triIndices) delete[] triIndices;
+        nodes = nullptr;
+        triIndices = nullptr;
+    }
+};
+
 enum MaterialType
 {
     eLAMBERTIAN,

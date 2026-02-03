@@ -71,6 +71,11 @@ __host__ Scene loadScene(const std::string &fp, const std::string &mtlFp)
     if (scn.materials.empty())
     {
         std::cerr << "Materials of scene is empty." << std::endl;
+        Material defaultMat;
+        defaultMat.albedo = make_float3(0.7f, 0.7f, 0.7f); // 밝은 회색
+        defaultMat.emission = make_float3(0.0f, 0.0f, 0.0f);
+        defaultMat.type = eLAMBERTIAN;
+        scn.materials.push_back(defaultMat);
     }
 
     for (const auto &shape : shapes)
