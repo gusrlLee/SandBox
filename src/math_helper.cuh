@@ -44,7 +44,10 @@
 typedef unsigned int uint;
 typedef unsigned short ushort;
 
-#define PI 3.1415926535897932385
+#ifndef PI
+#define PI 3.1415926535897932385f
+#endif
+
 #define INV_PI 0.31830988618379067154
 
 #ifndef EXIT_WAIVED

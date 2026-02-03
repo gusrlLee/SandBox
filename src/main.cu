@@ -1,6 +1,9 @@
 #include <iostream>
 #include <filesystem>
 
+#include <tiny-cuda-nn/common.h>
+#include <tiny-cuda-nn/config.h>
+
 #include "math_helper.cuh"
 #include "structs.cuh"
 
@@ -215,7 +218,13 @@ __global__ void render(
 
 int main(int argc, char **argv)
 {
-    std::cout << "Hello world!" << std::endl;
+    std::cout << "Tiny CUDA NN version check..." << std::endl;
+    
+    // 간단한 테스트: GPU가 있는지 확인
+    int device_id = 0;
+    cudaGetDevice(&device_id);
+    std::cout << "Linked successfully! Running on Device: " << device_id << std::endl;
+
     std::string inputPath = (argc > 1) ? argv[1] : "./data/CornellBox/CornellBox-Original.obj";
     std::filesystem::path objPath(inputPath);
 

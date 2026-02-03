@@ -13,5 +13,7 @@ message(STATUS "---------------------------------------------------")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
+set(TCNN_CUDA_ARCHITECTURES 86)
+
 add_subdirectory(lib)
 add_subdirectory(src)
