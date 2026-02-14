@@ -1,7 +1,15 @@
 #include <iostream>
 #include <filesystem>
+#include <chrono>
+#include <cstdlib>
+#include <fstream>
+#include <random>
+#include <stdexcept>
+#include <string>
+#include <thread>
+#include <vector>
 
-#include <tiny-cuda-nn/common.h>
+#include <tiny-cuda-nn/common_device.h>
 #include <tiny-cuda-nn/config.h>
 
 #include "math_helper.cuh"
@@ -12,6 +20,36 @@
 
 #include <cuda_runtime.h>
 #include <curand_kernel.h>
+
+tcnn::json config = {
+    {"loss", {{"otype", "RelativeL2"}}},
+    {"optimizer", {
+                      {"otype", "Adam"},
+                      // {"otype", "Shampoo"},
+                      {"learning_rate", 1e-2},
+                      {"beta1", 0.9f},
+                      {"beta2", 0.99f},
+                      {"l2_reg", 0.0f},
+                      // The following parameters are only used when the optimizer is "Shampoo".
+                      {"beta3", 0.9f},
+                      {"beta_shampoo", 0.0f},
+                      {"identity", 0.0001f},
+                      {"cg_on_momentum", false},
+                      {"frobenius_normalization", true},
+                  }},
+    {"encoding", {
+                     {"otype", "OneBlob"},
+                     {"n_bins", 32},
+                 }},
+    {"network", {
+                    {"otype", "FullyFusedMLP"},
+                    // {"otype", "CutlassMLP"},
+                    {"n_neurons", 64},
+                    {"n_hidden_layers", 4},
+                    {"activation", "ReLU"},
+                    {"output_activation", "None"},
+                }},
+};
 
 __global__ void initRandState(int width, int height, curandState *rand_state)
 {
@@ -219,7 +257,11 @@ __global__ void render(
 int main(int argc, char **argv)
 {
     std::cout << "Tiny CUDA NN version check..." << std::endl;
+    uint32_t compute_capability = tcnn::cuda_compute_capability();
+
     
+
+
     // 간단한 테스트: GPU가 있는지 확인
     int device_id = 0;
     cudaGetDevice(&device_id);
