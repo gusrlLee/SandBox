@@ -36,8 +36,8 @@
  *    Thanks to Linh Hah for additions and fixes.
  */
 
-#ifndef HELPER_MATH_H
-#define HELPER_MATH_H
+#ifndef SANDBOX_MATH_CUDA_HEADER
+#define SANDBOX_MATH_CUDA_HEADER
 
 #include <cuda_runtime.h>
 
@@ -1470,4 +1470,4 @@ inline __device__ __host__ float4 smoothstep(float4 a, float4 b, float4 x)
     return (y * y * (make_float4(3.0f) - (make_float4(2.0f) * y)));
 }
 
-#endif
+#endif // SANDBOX_MATH_CUDA_HEADER
