@@ -75,3 +75,9 @@ void Window::endFrame(cudaSurfaceObject_t &frame)
                       0, 0, m_Height, m_Height,
                       GL_COLOR_BUFFER_BIT, GL_NEAREST);
 }
+
+void Window::swapBuffer()
+{
+    glfwSwapBuffers(m_Window);
+    glfwPollEvents(); 
+}

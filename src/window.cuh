@@ -24,11 +24,8 @@ public:
     void draw();
 
 
-    void swapBuffer()
-    {
-        glfwSwapBuffers(m_Window);
-        glfwPollEvents(); 
-    }
+    void swapBuffer();
+
 
 private:
     const char* m_Title;
