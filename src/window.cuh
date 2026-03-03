@@ -18,20 +18,26 @@ public:
 
     void init();
     bool shouldClose() { return glfwWindowShouldClose(m_Window); }
-    void update() 
-    { 
+
+    void beginFrame(cudaSurfaceObject_t &frame);
+    void endFrame(cudaSurfaceObject_t &frame);
+    void draw();
+
+
+    void swapBuffer()
+    {
         glfwSwapBuffers(m_Window);
         glfwPollEvents(); 
     }
 
 private:
+    const char* m_Title;
     int m_Width, m_Height;
     GLFWwindow* m_Window;
 
     GLuint m_Fbo;
     GLuint m_Texture;
-    cudaGraphicsResource* m_Frame;
+    cudaGraphicsResource* m_cuResource;
 };
-
 
 #endif // SANDBOX_WINDOW_CUDA_HEADER
