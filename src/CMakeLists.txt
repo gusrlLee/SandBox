@@ -7,8 +7,6 @@ add_executable(${PROJECT_NAME}
     math.cuh
     window.cuh
     window.cu
-    renderer.cuh
-    renderer.cu
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/ext)

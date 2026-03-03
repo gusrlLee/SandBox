@@ -1,7 +1,37 @@
 #include <iostream>
+#include <stdexcept>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <cmath>
 
-#include "renderer.cuh"
+#include <cuda_runtime.h>
+#include <curand_kernel.h>
+#include <optix.h>
+#include <optix_stubs.h>
+#include <optix_function_table_definition.h>
+
 #include "window.cuh"
+
+#define OPTIX_CHECK(call)                                                                         \
+{                                                                                                 \
+    OptixResult res = call;                                                                       \
+    if (res != OPTIX_SUCCESS)                                                                     \
+    {                                                                                             \
+        fprintf(stderr, "Optix call (%s) failed with code %d (line %d)\n", #call, res, __LINE__); \
+        exit(2);                                                                                  \
+    }                                                                                             \
+}
+
+static void context_log_cb(unsigned int level, const char *tag, const char *message, void * /*cbdata */)
+{
+    std::cerr << "[" << std::setw(2) << level << "][" << std::setw(12) << tag << "]: "
+              << message << "\n";
+}
+
 
 __global__ void cascadeTestKernel(cudaSurfaceObject_t surface, int width, int height)
 {
@@ -30,19 +60,42 @@ void launchCascadeKernel(cudaSurfaceObject_t surface, int width, int height)
 
 int main()
 {
-    std::shared_ptr<Window> window = std::make_shared<Window>("Check", 800, 800);
-    std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>();
+    int width = 1080;
+    int height = 720;
+
+    std::shared_ptr<Window> window = std::make_shared<Window>("Path Tracer", width, height);
+
+    cudaFree(0);
+    OPTIX_CHECK(optixInit());
+
+    OptixDeviceContextOptions options = {};
+    options.logCallbackFunction = &context_log_cb;
+    options.logCallbackLevel = 4; // 0 : disable, 4 : info (detail)
+
+#ifdef _DEBUG
+    options.validationMode = OPTIX_DEVICE_CONTEXT_VALIDATION_MODE_ALL;
+#else
+    options.validationMode = OPTIX_DEVICE_CONTEXT_VALIDATION_MODE_OFF;
+#endif
+    // context create
+    OptixDeviceContext context = nullptr;
+    CUcontext cuCtx = 0; // 0 means current CUDA context
+    OPTIX_CHECK(optixDeviceContextCreate(cuCtx, &options, &context));
+    std::cout << "OptiX Context created successfully!" << std::endl;
+
+    // context create
 
     while(!window->shouldClose())
     {
         cudaSurfaceObject_t frame;
         window->beginFrame(frame);
 
-        launchCascadeKernel(frame, 800, 800);
+        launchCascadeKernel(frame, window->getWidth(), window->getHeight());
 
         window->endFrame(frame);
         window->swapBuffer();
     }
 
-
+    OPTIX_CHECK(optixDeviceContextDestroy(context));
+    return 0;
 }

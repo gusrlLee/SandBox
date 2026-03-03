@@ -5,7 +5,6 @@ Window::Window(const char *title, int width, int height)
     m_Title = title;
     m_Width = width;
     m_Height = height;
-
     init();
 }
 
@@ -43,7 +42,7 @@ void Window::init()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    cudaGraphicsGLRegisterImage(&m_cuResource, m_Texture, GL_TEXTURE_2D, cudaGraphicsRegisterFlagsWriteDiscard | cudaGraphicsRegisterFlagsSurfaceLoadStore);
+    cudaGraphicsGLRegisterImage(&m_cuResource, m_Texture, GL_TEXTURE_2D, cudaGraphicsRegisterFlagsWriteDiscard );
 
     glGenFramebuffers(1, &m_Fbo);
     glBindFramebuffer(GL_READ_FRAMEBUFFER, m_Fbo);

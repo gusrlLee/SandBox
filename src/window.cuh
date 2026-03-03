@@ -23,6 +23,9 @@ public:
     void endFrame(cudaSurfaceObject_t &frame);
     void draw();
 
+    int getWidth() { return m_Width; }
+    int getHeight() { return m_Height; }
+
 
     void swapBuffer();
 
