@@ -1,11 +1,20 @@
 cmake_minimum_required(VERSION 3.30 FATAL_ERROR)
 
 file(GLOB_RECURSE SOURCES
-    common.cu
-    common.cuh
     main.cu
-    math_helpder.cuh
+    math.cuh
+    window.cuh
+    window.cu
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES})
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/external)
+add_executable(${PROJECT_NAME} 
+    main.cu
+    math.cuh
+    window.cuh
+    window.cu
+)
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/ext)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC glad)
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw)

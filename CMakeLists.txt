@@ -11,5 +11,5 @@ message(STATUS ">> Current CUDA Architectures: ${CMAKE_CUDA_ARCHITECTURES}")
 message(STATUS ">> CUDA Compiler Version: ${CMAKE_CUDA_COMPILER_VERSION}")
 message(STATUS "---------------------------------------------------")
 
-add_subdirectory(external)
+add_subdirectory(ext)
 add_subdirectory(src)
