@@ -13,13 +13,14 @@ add_executable(${PROJECT_NAME}
 
 	render/RenderContext.h
 	render/RenderContext.cpp
-
 	render/GLInterop.h
 	render/GLInterop.cpp
-
 	render/TestKernel.h
 	render/TestKernel.cu
 	render/Buffer.h
+
+	scene/Mesh.h
+	scene/Mesh.cpp
 
 	shaders/Common.h
 )
