@@ -19,6 +19,7 @@ add_executable(${PROJECT_NAME}
 
 	render/TestKernel.h
 	render/TestKernel.cu
+	render/Buffer.h
 
 	shaders/Common.h
 )

@@ -29,14 +29,14 @@ void GLInterop::init(int width, int height)
 
     glGenBuffers(1, &m_Pbo);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_Pbo);
-    glBufferData(GL_PIXEL_UNPACK_BUFFER, m_Width * m_Height * 4 * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_PIXEL_UNPACK_BUFFER, m_Width * m_Height * 4 * sizeof(unsigned char), nullptr, GL_DYNAMIC_DRAW);    
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
     cudaGraphicsGLRegisterBuffer(&m_CudaResource, m_Pbo, cudaGraphicsMapFlagsWriteDiscard);
 
     glGenTextures(1, &m_Tex);
     glBindTexture(GL_TEXTURE_2D, m_Tex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
@@ -86,7 +86,7 @@ void GLInterop::draw()
 {
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_Pbo);
     glBindTexture(GL_TEXTURE_2D, m_Tex);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, GL_RGBA, GL_FLOAT, nullptr);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
     glClear(GL_COLOR_BUFFER_BIT);

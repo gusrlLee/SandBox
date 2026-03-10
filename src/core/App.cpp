@@ -27,7 +27,11 @@ void Application::run()
     {
         void* dPbo = m_GLInterop->map();
         
-        launchTestKernel(dPbo, m_Window->getWidth(), m_Window->getHeight());
+        m_RenderContext->render(
+            static_cast<uchar4*>(dPbo),
+            m_Window->getWidth(),
+            m_Window->getHeight()
+        );
 
         m_GLInterop->unmap();
         m_GLInterop->draw();
