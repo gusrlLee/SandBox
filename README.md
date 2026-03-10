@@ -2,7 +2,7 @@
 This is my SandBox for computer graphics
 
 ## Architecture
-```
+```text
 SandBox/
 ├── CMakeLists.txt           # 전체 빌드 설정 (OptiX, CUDA, C++ 설정)
 ├── extern/                  # 외부 라이브러리 (수정하지 않는 코드)
@@ -35,42 +35,63 @@ SandBox/
 │       ├── pt_kernels.cu     # Path Tracing용 Raygen, Miss, ClosestHit
 │       └── bdpt_kernels.cu   # BDPT용 커널
 ```
----
 
-## Work In Progress
+📊 Current Progress: ~50%
+가장 난이도가 높은 GPU Interop 및 OptiX 렌더링 파이프라인 기반 구축 완료. 이제 씬 데이터 로드 및 실제 렌더링 알고리즘 구현 단계로 진입.
 
-### ✅ Completed
-* **초기 initialization 설정 (완료)**
-  * Window 인터페이스: GLFW 및 GLAD를 활용한 윈도우 컨텍스트 생성 및 Window 클래스 래핑 완료.
-  * 애플리케이션 프레임워크: 메인 루프(Update/Render)를 담당하는 App 클래스 및 전체 프로젝트 폴더 구조(src/core, render, scene 등) 확립.
+Work In Progress
+✅ Completed
+초기 initialization 설정
 
-* **GPU 연동 및 디스플레이 (완료)**
-  * CUDA + OpenGL Interop: PBO(Pixel Buffer Object)를 활용하여 CUDA 커널의 계산 결과를 OpenGL 텍스처로 실시간 전송 및 출력하는 파이프라인 구축.
-  * 검증 커널: TestKernel.cu를 통해 화면에 그라데이션을 띄워 데이터 전송 무결성 확인.
+Window 인터페이스: GLFW 및 GLAD를 활용한 윈도우 컨텍스트 생성 및 Window 클래스 래핑 완료.
 
-* **OptiX 환경 설정 및 커널 로드 (완료)**
-  * 빌드 시스템: CMake를 통해 OptiX 8.0 SDK 및 관련 종속성(CUDA Toolkit 등) 링크 완료.
-  * 컨텍스트 초기화: RenderContext 클래스에서 optixDeviceContextCreate를 포함한 기본 디바이스 초기화 로직 구현.
-  * Module 생성: PathTracingKernel.ptx 파일을 로드하여 OptiX Module 생성 완료.
-  * Program Group 생성: Raygen, Miss, HitGroup(ClosestHit) 커널을 각각 연결하여 OptixProgramGroup 구성 완료.
+애플리케이션 프레임워크: 메인 루프(Update/Render)를 담당하는 App 클래스 및 전체 프로젝트 폴더 구조 확립.
 
-### 🚀 To-Do (Next Steps)
-* **Pipeline 및 SBT 구축 (진행 중)**
-  * Pipeline 생성: 생성된 Module과 Program Group들을 연결하여 OptiX Pipeline (optixPipelineCreate) 구축.
-  * SBT(Shader Binding Table) 구현: Raygen, Miss, HitGroup 레코드를 호스트 메모리에서 구성하고, CUDA 디바이스 메모리에 할당하여 매핑.
+GPU 연동 및 디스플레이
 
-* **Basic Launch**
-  * 기존 CUDA 그라데이션 커널을 optixLaunch로 대체하여 화면 출력 확인.
+CUDA + OpenGL Interop: PBO를 활용하여 CUDA 커널의 계산 결과를 OpenGL 텍스처로 실시간 전송하는 파이프라인 구축.
 
-* **Scene & Asset Loading**
-  * Asset Loader: tinyobjloader를 프로젝트(extern/)에 클론 및 포함시키고 메시 로드 로직 구현.
-  * AS(Acceleration Structure) 빌드: 로드된 메시 데이터(Vertex/Index)를 GPU 버퍼로 전송하고 GAS/IAS 구축.
+OptiX 환경 설정 및 파이프라인 구축
 
-* **Camera System**
-  * Camera.h를 완성하여 마우스/키보드 입력에 따른 실시간 뷰 매트릭스 변환 구현.
+빌드 시스템: CMake를 통해 OptiX 8.0 SDK 및 CUDA Toolkit 링크.
 
-* **Integrator 모듈화**
-  * PathTracer, BDPT 등 다양한 알고리즘을 인터페이스화하여 메인 루프에서 교체 가능한 구조 완성.
+컨텍스트 초기화 및 커널 로드: Context, Module(PTX 로드), Program Group 구성 완료.
 
-* **GUI 통합**
-  * Dear ImGui를 연동하여 렌더링 파라미터(SPP, 루프 횟수 등) 실시간 제어.
+Pipeline 및 SBT 구축: Pipeline 생성 및 Shader Binding Table 디바이스 메모리 할당 및 매핑 성공.
+
+Basic Launch (First Pixel)
+
+optixLaunch 연동: 디바이스 파라미터 버퍼 업데이트 및 Raygen 커널을 통한 PBO 그라데이션 화면 출력 성공.
+
+🚀 To-Do (Next Steps)
+Scene & Asset Loading (진행 중)
+
+Asset Loader: tinyobjloader를 프로젝트에 포함시키고, .obj 파일을 읽어 정점(Vertex)과 인덱스(Index) 데이터를 파싱하는 Mesh 클래스 로직 구현.
+
+Acceleration Structure (AS) 빌드
+
+로드된 Mesh 데이터를 GPU 버퍼로 전송.
+
+OptiX 하드웨어 가속을 위한 GAS(Geometry Acceleration Structure) 및 IAS(Instance Acceleration Structure) 구축.
+
+Camera System
+
+Camera.h를 완성하여 마우스/키보드 입력에 따른 실시간 뷰 매트릭스 변환 로직 구현.
+
+Integrator & Ray Tracing 로직
+
+ClosestHit 커널(pt_kernels.cu) 업데이트: 광선과 Mesh가 교차했을 때 법선(Normal)이나 색상을 출력하도록 수정.
+
+Integrator 모듈화: PathTracer 인터페이스 설계 및 적용.
+
+GUI 통합
+
+Dear ImGui를 연동하여 샘플링 수(SPP), 재질 파라미터 등을 런타임에 실시간으로 제어.
+
+🔮 Future Roadmap (Advanced)
+Materials & Textures: BSDF 파라미터 구조체를 커널에 전달하여 다양한 재질(Diffuse, Specular, Glass 등) 표현 및 텍스처 매핑 지원.
+
+Lighting: Area Light 샘플링 및 HDRI 환경 맵(Environment Mapping) 조명 구현.
+
+Advanced Integrators: 논문 연구를 위한 BDPT(Bidirectional Path Tracing) 및 Photon Mapping 구현.
+
