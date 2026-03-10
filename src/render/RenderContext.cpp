@@ -87,7 +87,6 @@ void RenderContext::createModule()
         std::cerr << "Failed to create OptiX Module! Log:\n" << log << "\n";
         exit(EXIT_FAILURE);
     }
-
 }
 
 void RenderContext::createProgramGroups()
