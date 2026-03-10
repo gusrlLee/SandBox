@@ -12,9 +12,9 @@ function(compile_cuda_to_ptx target_name input_file output_ptx)
         COMMAND ${CMAKE_CUDA_COMPILER}
         -ptx 
         -I${OptiX_INSTALL_DIR}/include
+        -I${CMAKE_SOURCE_DIR}/src
         -I${CMAKE_SOURCE_DIR}/ext
-        -I${CMAKE_CURRENT_SOURCE_DIR}
-        -arch=compute_75
+        -arch=compute_75                      
         --use_fast_math
         -lineinfo
         --keep-device-functions
@@ -24,8 +24,11 @@ function(compile_cuda_to_ptx target_name input_file output_ptx)
         COMMENT "Compiling CUDA to PTX: ${input_file}"
     )
     add_custom_target(${target_name}_ptx DEPENDS ${output_ptx})
-    add_dependencies(${SAMPLE_NAME} ${target_name}_ptx)
+    add_dependencies(${PROJECT_NAME} ${target_name}_ptx) # PROJECT_NAME으로 수정
 endfunction()
+
+set(PTX_OUTPUT_DIR "${CMAKE_BINARY_DIR}/ptx")
+file(MAKE_DIRECTORY ${PTX_OUTPUT_DIR})
 
 
 if(NOT DEFINED OptiX_INSTALL_DIR)
