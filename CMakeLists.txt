@@ -33,7 +33,6 @@ if(NOT DEFINED OptiX_INSTALL_DIR)
 endif()
 
 message(STATUS "Using OptiX SDK at: ${OptiX_INSTALL_DIR}")
-
 message(STATUS "---------------------------------------------------")
 message(STATUS ">> Current CUDA Architectures: ${CMAKE_CUDA_ARCHITECTURES}")
 message(STATUS ">> CUDA Compiler Version: ${CMAKE_CUDA_COMPILER_VERSION}")
