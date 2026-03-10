@@ -2,7 +2,7 @@
 This is my SandBox for computer graphics
 
 # architecture 
-Zero/
+SandBox/
 ├── CMakeLists.txt           # 전체 빌드 설정 (OptiX, CUDA, C++ 설정)
 ├── extern/                  # 외부 라이브러리 (수정하지 않는 코드)
 │   ├── imgui/
